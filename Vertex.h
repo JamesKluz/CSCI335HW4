@@ -16,9 +16,34 @@
 template <typename Object>
 class Vertex{
 public:
+	Vertex() = default;
 	Vertex(Object this_key){
 		key_ = this_key;
 	}
+	/*// Copy constructor.
+    Vertex(const Vertex &rhs) : key_(rhs.key_){
+    	for(auto x : rhs.adjacent_nodes_)
+    		adjacent_nodes_.push_back(x);
+    }
+    
+    // Move constructor.
+    Vertex(Vertex &&rhs): key_{std::move(rhs.key_)}, 
+    	adjacent_nodes_{rhs.adjacent_nodes_} { }
+    
+    // Copy assignment operator.
+    Vertex & operator=(const Vertex &rhs) {
+        Vertex copy = rhs;
+        std::swap(*this, copy);
+        return *this;
+    }
+    
+    // Move assignment operator.
+    Vertex & operator=(Vertex && rhs) {
+        std::swap(key_, rhs.key_);
+        std::swap(adjacent_nodes_, rhs.adjacent_nodes_);
+        
+        return *this;
+    } */
 	void add_edge(std::pair< Vertex<Object> *, double > edge){
 		adjacent_nodes_.push_back(edge);
 	}
@@ -38,10 +63,10 @@ class Graph{
 public:
 	void add_connection(Object a, Object b, double weight){
 		if(vertex_map_.find(a) == vertex_map_.end()){
-			vertex_map_[a] = Vertex<Object>{a};
+			vertex_map_[a] = Vertex<Object>(a);
 		}
 		if(vertex_map_.find(b) == vertex_map_.end()){
-			vertex_map_[b] = Vertex<Object>{b};
+			vertex_map_[b] = Vertex<Object>(b);
 		}
 		Vertex<Object>* temp = & vertex_map_[b];
 		std::pair<Vertex<Object>*, double> new_connection = std::make_pair(temp, weight);
