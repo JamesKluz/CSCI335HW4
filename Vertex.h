@@ -12,6 +12,7 @@
  #include <iostream>
  #include <list>		//for list
  #include <utility>		//for std::pair
+ #include <float.h>		//DBL_MAX
 
 template <typename Object>
 class Vertex{
@@ -50,6 +51,15 @@ public:
 	Object getkey(){
 		return key_;
 	}
+	double get_edge_weight(Object b){
+		auto x = adjacent_nodes_.begin();
+		while(x != adjacent_nodes_.end()){
+			if(x->first->getkey() == b)
+				return x->second;
+			x++;
+		} 
+		return DBL_MAX;
+	}
 private:
 	//1st position in pair is the key for a vertex
 	//2nd position is the weight of the path to the
@@ -61,6 +71,11 @@ private:
 template <typename Object>
 class Graph{
 public:
+	void add_vertex(Object a){
+		if(vertex_map_.find(a) == vertex_map_.end()){
+			vertex_map_[a] = Vertex<Object>(a);
+		}
+	}
 	void add_connection(Object a, Object b, double weight){
 		if(vertex_map_.find(a) == vertex_map_.end()){
 			vertex_map_[a] = Vertex<Object>(a);
@@ -71,6 +86,14 @@ public:
 		Vertex<Object>* temp = & vertex_map_[b];
 		std::pair<Vertex<Object>*, double> new_connection = std::make_pair(temp, weight);
 		vertex_map_[a].add_edge(new_connection);
+	}
+	double edge_weight(Object a, Object b){
+		auto x = vertex_map_.find(a);
+		if(x != vertex_map_.end()){
+			return x->second.get_edge_weight(b);
+		}
+		else
+			return DBL_MAX;
 	}
 private:
 	std::unordered_map<Object, Vertex<Object>> vertex_map_;	
