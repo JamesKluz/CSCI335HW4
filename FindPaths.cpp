@@ -1,19 +1,20 @@
 /****************************************
- File:      CreateGraphAndTest.cpp
+ File:      FindPaths.cpp
  Author:    James Kluz
  Purpose:   
-			Parse and create graph using adjecency list from Graph1.txt where each vertex	
+			Parse and create graph using adjecency list from .txt where each vertex	
 			is represented by an integer from 1 to N. Each line	is of the form:
 			<vertex> <connected	vertex 1> <weight1>	<connected vertex 2> <weight 2>...
-			Then take in a series of quesries from a second text file where the queries
-			are of the form:
-			n m \n --> we check to see if n is connected to m and then output the weight.
+            Then from the command line input, return the shortest path to each vertex
+            from the vertex entered on command line along with weight of shortest path
+            We do this using Dijkstra.
  Date:      4/14/2016
  **************************************/
 #include <iostream>
 #include "Vertex.h"
 #include <fstream>
 #include <sstream> 
+#include <cstdlib>
 
 template <typename Object>
 void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
@@ -41,47 +42,29 @@ void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
     input.close();
  }
 
-template <typename Object>
-void Query_Graph(std::string const & querry_file, Graph<Object> & graph){
-    std::ifstream input;
-    input.open(querry_file);
-    if(input.fail()){
-        std::cout << "Failed to open " << querry_file << std::endl;
-        exit(1);
-    }
-    std::string line;
-    Object a;
-    Object b;
-    double edge_w;
-    while(std::getline(input, line)){
-        if(!line.empty()){
-            std::stringstream ss(line);
-            ss >> a;
-            ss >> b;
-            edge_w = graph.Edge_weight(a, b);
-            if(edge_w == DBL_MAX){
-                std::cout << a << " " << b << ": Not Connected\n";
-            }
-            else{
-                std::cout << a << " " << b << ": Connected, edge weight is " << edge_w << std::endl;
-            }
-        }
-    }
-    input.close();
-} 
+/*template <typename Object>
+void Dijkstra(const int vertex, Graph<Object> & graph){
+
+ }*/
 
  int main(int argc, char **argv){
  	if(argc != 3){
- 		std::cout << "Usage: " << argv[0] << " <graphInputFilename> <queryfilename> " << std::endl;
+ 		std::cout << "Usage: " << argv[0] << " <graphInputFilename> <Vertex> " << std::endl;
         return 0;
     }
 
     const std::string graph_filename(argv[1]);
-    const std::string query_filename(argv[2]);
+    const int vertex = atoi(argv[2]);
 
     Graph<int> testgraph;
     Make_Graph<int>(graph_filename, testgraph);	
-    Query_Graph<int>(query_filename, testgraph);
+
+    testgraph.Dijkstra(vertex);
+    int count = 1;
+   while(testgraph.Contains(count)){
+        testgraph.Print_shortest_path(count);
+        ++count;
+    }
 
     return 0;
  }
