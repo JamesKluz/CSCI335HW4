@@ -70,6 +70,14 @@ public:
 			std::cout << graph_node->id_ << ", ";
 		}
 	}
+	bool Is_connected(Object &v2){
+		for(auto it = adjacent_nodes_.begin(); it != adjacent_nodes_.end(); ++it){
+			if(it->first->id_ == v2){
+				return true;
+			} 
+		}
+		return false;
+	}
 
 private:
 	void Print_shortest_path_internal(Object * graph_node) const{
@@ -127,6 +135,11 @@ public:
 		}
 		else
 			return DBL_MAX;
+	}
+	bool Is_connected(Object &v1, Object &v2) const {
+		if(vertex_map_.find(v1) == vertex_map_.end() || vertex_map_.find(v2) == vertex_map_.end())
+			return false;
+		return vertex_map_[v1].Is_connected(v2);
 	}
 	void Dijkstra(Object start){
  		std::priority_queue<Vertex<Object> *, std::vector<Vertex<Object> *>, CompVertDist<Object>> distance_queue;
