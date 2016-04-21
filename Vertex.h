@@ -32,49 +32,11 @@ public:
 		path_prev_ = nullptr;
 		starting_vertex_ = false;
 	}
-	void Add_edge(std::pair< Vertex<Object> *, double > edge){
-		adjacent_nodes_.push_back(edge);
-	}
-	Object Get_id(){
-		return id_;
-	}
-	double Get_edge_weight(Object b){
-		auto x = adjacent_nodes_.begin();
-		while(x != adjacent_nodes_.end()){
-			if(x->first->Get_id() == b)
-				return x->second;
-			x++;
-		} 
-		return DBL_MAX;
-	}
-	void Print_shortest_path(Object * graph_node) const{
-		if(graph_node->path_prev_ == nullptr){
-			std::cout << graph_node->id_ << ", ";
-		}
-		else{
-			Print_shortest_path_internal(graph_node->prev);
-			std::cout << graph_node->id_ << ", ";
-		}
-	}
-	bool Is_connected(const Object &v2) const{
-		for(auto it = adjacent_nodes_.begin(); it != adjacent_nodes_.end(); ++it){
-			if(it->first->id_ == v2){
-				return true;
-			} 
-		}
-		return false;
-	}
 
-private:
-	void Print_shortest_path_internal(Object * graph_node) const{
-		if(graph_node->path_prev_ == nullptr){
-			std::cout << graph_node->id_ << ", ";
-		}
-		else{
-			Print_shortest_path_internal(graph_node->prev);
-			std::cout << graph_node->id_ << ", ";
-		}
+	int Get_distance() const {
+		return distance_;
 	}
+private:
 	Object id_;
 	double distance_;
 	bool known_;
@@ -112,12 +74,21 @@ public:
 		}
 		Vertex<Object>* temp = & vertex_map_[b];
 		std::pair<Vertex<Object>*, double> new_connection = std::make_pair(temp, weight);
-		vertex_map_[a].Add_edge(new_connection);
+		vertex_map_[a].adjacent_nodes_.push_back(new_connection);
+
 	}
 	double Edge_weight(Object a, Object b){
 		auto x = vertex_map_.find(a);
 		if(x != vertex_map_.end()){
-			return x->second.Get_edge_weight(b);
+			//return x->second.Get_edge_weight(b);
+			auto y = x->second.adjacent_nodes_.begin();
+			auto x_end = x->second.adjacent_nodes_.end();
+			while(y != x_end){
+				if(y->first->id_ == b)
+					return y->second;
+				y++;
+			} 
+			return DBL_MAX;
 		}
 		else
 			return DBL_MAX;
@@ -125,8 +96,12 @@ public:
 	bool Is_connected(const Object &v1, const Object &v2){
 		if(vertex_map_.find(v1) == vertex_map_.end() || vertex_map_.find(v2) == vertex_map_.end())
 			return false;
-		const Vertex<Object> & temp = vertex_map_[v1];
-		return temp.Is_connected(v2);
+		for(auto it = vertex_map_[v1].adjacent_nodes_.begin(); it != vertex_map_[v1].adjacent_nodes_.end(); ++it){
+			if(it->first->id_ == v2){
+				return true;
+			} 
+		}
+		return false;
 	}
 	void Dijkstra(Object start){
  		std::priority_queue<Vertex<Object> *, std::vector<Vertex<Object> *>, CompVertDist<Object>> distance_queue;
