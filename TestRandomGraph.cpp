@@ -12,7 +12,7 @@
 #include "DisjSets.h"
 #include "Vertex.h" 
 
-int main(){
+int main(int argc, char **argv){
  	if(argc != 2){
  		std::cout << "Usage: " << argv[0] << " <graphSize> " << std::endl;
         return 0;
@@ -26,16 +26,20 @@ int main(){
     }
     int i1, i2;
 	srand(time(0)); //use current time as seed for random generator
-	while (vertex_sets.Get_number_of_sets() > 1) {
+	int count = 0;
+	while (vertex_sets.Get_number_of_sets() > 1 && count < 1000000) {
  		i1 = rand() % vertex_number + 1;
  		i2 = rand() % (vertex_number-1) + 1;
  		if(i1 == i2)
  			++i2;
  		if(!testGraph.Is_connected(i1, i2)){
- 			testGraph.Add_connection(i1, i2);
- 			testGraph.Add_connection(i2, i1);
+ 			testGraph.Add_connection(i1, i2, 1.0);
+ 			testGraph.Add_connection(i2, i1, 1.0);
  		}
  		vertex_sets.Connect_elems(i1, i2);
+ 		++count;
  	}
+ 	//std::cout << count <<std::endl;
+ 	testGraph.Print_stats();
  	return 0;
 }

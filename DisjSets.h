@@ -24,7 +24,7 @@ public:
 			++number_of_sets_;
 		}		
 	}
-		Object Find_root(Object elem){
+	Object Find_root(Object elem){
 		if(sets_[elem] == elem)
 			return elem;
 		else
@@ -33,12 +33,13 @@ public:
 	void Connect_elems(Object elem1, Object elem2){
 		Add_elem(elem1);
 		Add_elem(elem2);
-		root1 = Find_root(elem1);
-		root2 = Find_root(elem1);
-		if(root1 == root2)
-			return;
+		Object root1 = Find_root(elem1);
+		Object root2 = Find_root(elem2);
+		if(root1 == root2){
+			return;	
+		}
 		Union_sets(root1, root2);
-		--number_of_sets_;
+		number_of_sets_ = number_of_sets_ - 1;
 	}
 	int Get_number_of_sets(){
 		return number_of_sets_;

@@ -13,6 +13,7 @@
  #include <list>		//for list
  #include <utility>		//for std::pair
  #include <float.h>		//DBL_MAX
+ #include <climits>
  #include <queue>
 
 template<typename Object>
@@ -46,21 +47,6 @@ public:
 		} 
 		return DBL_MAX;
 	}
-	void Reset(){
-		distance_ = DBL_MAX;
-		known_ = false;
-		path_prev_ = nullptr;
-		starting_vertex_ = false;
-	}
-	void Set_distance(double dist_new){
-		distance_ = dist_new;
-	}
-	double Get_distance() const {
-		return distance_;
-	}
-	void Set_known(bool truth_value){
-		known_ = truth_value;
-	}
 	void Print_shortest_path(Object * graph_node) const{
 		if(graph_node->path_prev_ == nullptr){
 			std::cout << graph_node->id_ << ", ";
@@ -70,7 +56,7 @@ public:
 			std::cout << graph_node->id_ << ", ";
 		}
 	}
-	bool Is_connected(Object &v2){
+	bool Is_connected(const Object &v2) const{
 		for(auto it = adjacent_nodes_.begin(); it != adjacent_nodes_.end(); ++it){
 			if(it->first->id_ == v2){
 				return true;
@@ -136,17 +122,18 @@ public:
 		else
 			return DBL_MAX;
 	}
-	bool Is_connected(Object &v1, Object &v2) const {
+	bool Is_connected(const Object &v1, const Object &v2){
 		if(vertex_map_.find(v1) == vertex_map_.end() || vertex_map_.find(v2) == vertex_map_.end())
 			return false;
-		return vertex_map_[v1].Is_connected(v2);
+		const Vertex<Object> & temp = vertex_map_[v1];
+		return temp.Is_connected(v2);
 	}
 	void Dijkstra(Object start){
  		std::priority_queue<Vertex<Object> *, std::vector<Vertex<Object> *>, CompVertDist<Object>> distance_queue;
 		for(auto it = vertex_map_.begin(); it != vertex_map_.end(); ++it ){
-			it->second.Reset();
+			Reset_vertex(it->second);
 		}
-		vertex_map_[start].Set_distance(0.0);
+		vertex_map_[start].distance_ = 0.0;
 		Vertex<Object> *v = & vertex_map_[start];
 		v->starting_vertex_ = true;
 		distance_queue.push(v);
@@ -160,7 +147,7 @@ public:
 			}
 			if(!success)
 				break;
-			v->Set_known(true);
+			v->known_ = true;
 			//THIS LOOP IS WHY I MADE GRAPH A FRIEND OF 
 			for(auto it = v->adjacent_nodes_.begin(); it != v->adjacent_nodes_.end(); ++it){
 				if(v->distance_ + it->second < it->first->distance_){
@@ -191,6 +178,31 @@ public:
 		return vertex_map_.find(vertex_node) != vertex_map_.end();
 	}
 
+	size_t Get_size(){
+		return vertex_map_.size();
+	}
+
+	void Print_stats(){
+		int smallest_out = INT_MAX;
+		int largest_out = 0;
+		int edge_total = 0;
+
+
+		for(auto it = vertex_map_.begin(); it != vertex_map_.end(); ++it){
+			int current = it->second.adjacent_nodes_.size();
+			edge_total += current;
+			if(current < smallest_out)
+				smallest_out = current;
+			if(largest_out < current)
+				largest_out = current;
+		}
+
+		std::cout << "The Random graph of size " << vertex_map_.size() << " has " << edge_total << " edges\n";
+		std::cout << "The smallest out degree is: " << smallest_out << std::endl;
+		std::cout << "The largest out degree is: " << largest_out << std::endl;
+		std::cout << "The average out degree is: " << edge_total / static_cast<double>(vertex_map_.size()) << std::endl;
+	}
+
 private:
 	//ANOTHER FUNCTION THAT EXPECTS TO BE VERTEX TO BE FRIEND
 	void Print_shortest_path_internal(Vertex<Object> * & graph_node) const{
@@ -202,7 +214,14 @@ private:
 			std::cout << graph_node->id_ << ", ";
 		}
 	}
+	void Reset_vertex(Vertex<Object> v){
+		v.distance_ = DBL_MAX;
+		v.known_ = false;
+		v.path_prev_ = nullptr;
+		v.starting_vertex_ = false;
+	}
 	std::unordered_map<Object, Vertex<Object>> vertex_map_;	
+	size_t edge_count_;
 };
 
  #endif
