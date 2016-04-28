@@ -1,2 +1,0 @@
-# CSCI335HW4
-Assignment 4 CSCI 335
