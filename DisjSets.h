@@ -1,11 +1,15 @@
 /****************************************
- File:      DisjSets.h.h
+ File:      DisjSets.h
  Author:    James Kluz
  Purpose:   
 			Template Class for dynamic
 			connectivity of sets.
+			Implemented with Union-Find algorithm
+			using path compression.
+ Requires:	DisjSets.cpp			
  Date:      4/14/2016
  **************************************/
+
  #ifndef 	CSCI_335_DISJSETS_H
  #define	CSCI_335_DISJSETS_H
 
@@ -14,53 +18,30 @@
 template <typename Object>
 class DisjSets{
 public:
-	DisjSets(){
-		number_of_sets_ = 0;
-	}
-	void Add_elem(Object elem){
-		if(sets_.find(elem) == sets_.end()){
-			sets_[elem] = elem;
-			set_heights_[elem] = 0;
-			++number_of_sets_;
-		}		
-	}
-	Object Find_root(Object elem){
-		if(sets_[elem] == elem)
-			return elem;
-		else
-			return sets_[elem] = Find_root(sets_[elem]);
-	}
-	void Connect_elems(Object elem1, Object elem2){
-		Add_elem(elem1);
-		Add_elem(elem2);
-		Object root1 = Find_root(elem1);
-		Object root2 = Find_root(elem2);
-		if(root1 == root2){
-			return;	
-		}
-		Union_sets(root1, root2);
-		number_of_sets_ = number_of_sets_ - 1;
-	}
-	int Get_number_of_sets(){
-		return number_of_sets_;
-	}
-
-
+	DisjSets() : number_of_sets_{0} {}
+	//adds a new singleton set comprised
+	//of just elem
+	void Add_elem(Object elem);
+	//returns the root node of elem's set
+	//This function also changes the parent
+	//of each element along the path to elems
+	//root to the root
+	Object Find_root(Object elem);
+	//makes the root of the set with larger height
+	//the parent of the root of the set with smaller height
+	//if elem1 and elem2 have the same root then 
+	//nothing changes
+	void Connect_elems(Object elem1, Object elem2);
+	//returns an int corresponding to the number of
+	//sets in the data structure
+	int Get_number_of_sets() const;
 private:
-	void Union_sets(Object root1, Object root2){
-		if(set_heights_[root1] < set_heights_[root2]){
-			sets_[root1] = root2;
-		} else if(set_heights_[root2] < set_heights_[root1]){
-			sets_[root2] = root1;
-		} else{
-			sets_[root2] = root1;
-			set_heights_[root1] += 1; 
-		}
-	}
+	//internal function for Connect_elems(Object elem1, Object elem2)
+	void Union_sets(Object root1, Object root2);
 	std::unordered_map<Object, Object> sets_;
 	std::unordered_map<Object, int> set_heights_;
 	int number_of_sets_;	
  }; 
 
-
- #endif
+#include "DisjSets.cpp"
+#endif

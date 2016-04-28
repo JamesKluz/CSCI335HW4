@@ -11,10 +11,12 @@
  Date:      4/14/2016
  **************************************/
 #include <iostream>
-#include "Vertex.h"
+#include "Graph.h"
 #include <fstream>
 #include <sstream> 
 
+//Opens and parses files Graph1.txt and Graph2.txt
+//and fills graph with the corresponding vertices and edges
 template <typename Object>
 void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
     std::ifstream input;
@@ -23,11 +25,12 @@ void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
         std::cout << "Failed to open " << graph_file << std::endl;
         exit(1);
     }
-
     std::string line;
     Object this_vertex;
     Object a_new_vertex;
     double a_new_weight;
+    //Kill first line in .txt that specifies the number of vertices
+    std::getline(input, line);
     while(std::getline(input, line)){
         if(!line.empty()){
             std::stringstream ss(line);
@@ -40,7 +43,9 @@ void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
     }
     input.close();
  }
-
+//Opens and parses files AdjacencyQueries1.txt and AdjacencyQueries2.txt
+//and checks whether the corresponding vertices are connected and if they are
+//prints the weight of the edge 
 template <typename Object>
 void Query_Graph(std::string const & querry_file, Graph<Object> & graph){
     std::ifstream input;

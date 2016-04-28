@@ -11,11 +11,13 @@
  Date:      4/14/2016
  **************************************/
 #include <iostream>
-#include "Vertex.h"
+#include "Graph.h"
 #include <fstream>
 #include <sstream> 
 #include <cstdlib>
 
+//Opens and parses files Graph1.txt and Graph2.txt
+//and fills graph with the corresponding vertices and edges
 template <typename Object>
 void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
     std::ifstream input;
@@ -24,11 +26,12 @@ void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
         std::cout << "Failed to open " << graph_file << std::endl;
         exit(1);
     }
-
     std::string line;
     Object this_vertex;
     Object a_new_vertex;
     double a_new_weight;
+    //Kill first line in .txt that specifies the number of vertices
+    std::getline(input, line);
     while(std::getline(input, line)){
         if(!line.empty()){
             std::stringstream ss(line);
@@ -42,29 +45,20 @@ void Make_Graph(std::string const & graph_file, Graph<Object> & graph){
     input.close();
  }
 
-/*template <typename Object>
-void Dijkstra(const int vertex, Graph<Object> & graph){
-
- }*/
-
  int main(int argc, char **argv){
  	if(argc != 3){
  		std::cout << "Usage: " << argv[0] << " <graphInputFilename> <Vertex> " << std::endl;
         return 0;
     }
-
     const std::string graph_filename(argv[1]);
     const int vertex = atoi(argv[2]);
-
     Graph<int> testgraph;
     Make_Graph<int>(graph_filename, testgraph);	
-
     testgraph.Dijkstra(vertex);
     int count = 1;
-   while(testgraph.Contains(count)){
+    while(testgraph.Contains(count)){
         testgraph.Print_shortest_path(count);
         ++count;
     }
-
     return 0;
  }

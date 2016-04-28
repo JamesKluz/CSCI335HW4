@@ -1,8 +1,12 @@
 /****************************************
  File:      TestRandomGraph.cpp
  Author:    James Kluz
- Purpose:   
-			
+ Purpose:   Builds a random undirected graph with vertex ids being ints.
+            The graph will have N vertices where N is the first command 
+            line arguement. We use a union-find structure to simulate
+            connections and we add connections until all vertices are 
+            connected. The program then prints out some statistics about
+            the number of edges in the graph.
  Date:      4/14/2016
  **************************************/
 
@@ -10,7 +14,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "DisjSets.h"
-#include "Vertex.h" 
+#include "Graph.h" 
 
 int main(int argc, char **argv){
  	if(argc != 2){
@@ -27,7 +31,7 @@ int main(int argc, char **argv){
     int i1, i2;
 	srand(time(0)); //use current time as seed for random generator
 	int count = 0;
-	while (vertex_sets.Get_number_of_sets() > 1 && count < 1000000) {
+	while (vertex_sets.Get_number_of_sets() > 1) {
  		i1 = rand() % vertex_number + 1;
  		i2 = rand() % (vertex_number-1) + 1;
  		if(i1 == i2)
