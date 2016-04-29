@@ -136,7 +136,7 @@ void Graph<Object>::Print_stats() const{
 			largest_out = current;
 	}
 
-	std::cout << "The Random graph of size " << vertex_map_.size() << " has " << edge_total << " edges\n";
+	std::cout << "The Random graph of size " << vertex_map_.size() << " has " << edge_total << " directed edges\n";
 	std::cout << "The smallest out degree is: " << smallest_out << std::endl;
 	std::cout << "The largest out degree is: " << largest_out << std::endl;
 	std::cout << "The average out degree is: " << edge_total / static_cast<double>(vertex_map_.size()) << std::endl;

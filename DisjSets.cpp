@@ -8,7 +8,7 @@
  **************************************/
 
 template <typename Object>
-void DisjSets<Object>::Add_elem(Object elem){
+void DisjSets<Object>::Add_elem(const Object & elem){
 	if(sets_.find(elem) == sets_.end()){
 		sets_[elem] = elem;
 		set_heights_[elem] = 0;
@@ -16,18 +16,18 @@ void DisjSets<Object>::Add_elem(Object elem){
 	}		
 }
 template <typename Object>
-Object DisjSets<Object>::Find_root(Object elem){
+const Object & DisjSets<Object>::Find_root(const Object & elem){
 	if(sets_[elem] == elem)
 		return elem;
 	else
 		return sets_[elem] = Find_root(sets_[elem]);
 }
 template <typename Object>
-void DisjSets<Object>::Connect_elems(Object elem1, Object elem2){
+void DisjSets<Object>::Connect_elems(const Object & elem1, const Object & elem2){
 	Add_elem(elem1);
 	Add_elem(elem2);
-	Object root1 = Find_root(elem1);
-	Object root2 = Find_root(elem2);
+	const Object & root1 = Find_root(elem1);
+	const Object & root2 = Find_root(elem2);
 	if(root1 == root2){
 		return;	
 	}
@@ -39,7 +39,7 @@ int DisjSets<Object>::Get_number_of_sets() const{
 	return number_of_sets_;
 }
 template <typename Object>
-void DisjSets<Object>::Union_sets(Object root1, Object root2){
+void DisjSets<Object>::Union_sets(const Object & root1, const Object & root2){
 	if(set_heights_[root1] < set_heights_[root2]){
 		sets_[root1] = root2;
 	} else if(set_heights_[root2] < set_heights_[root1]){

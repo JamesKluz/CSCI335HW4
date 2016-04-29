@@ -21,23 +21,23 @@ public:
 	DisjSets() : number_of_sets_{0} {}
 	//adds a new singleton set comprised
 	//of just elem
-	void Add_elem(Object elem);
+	void Add_elem(const Object & elem);
 	//returns the root node of elem's set
 	//This function also changes the parent
 	//of each element along the path to elems
 	//root to the root
-	Object Find_root(Object elem);
+	const Object & Find_root(const Object & elem);
 	//makes the root of the set with larger height
 	//the parent of the root of the set with smaller height
 	//if elem1 and elem2 have the same root then 
 	//nothing changes
-	void Connect_elems(Object elem1, Object elem2);
+	void Connect_elems(const Object & elem1, const Object & elem2);
 	//returns an int corresponding to the number of
 	//sets in the data structure
 	int Get_number_of_sets() const;
 private:
 	//internal function for Connect_elems(Object elem1, Object elem2)
-	void Union_sets(Object root1, Object root2);
+	void Union_sets(const Object & root1, const Object & root2);
 	std::unordered_map<Object, Object> sets_;
 	std::unordered_map<Object, int> set_heights_;
 	int number_of_sets_;	
